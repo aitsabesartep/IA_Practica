@@ -1,6 +1,9 @@
 package agents;
 
 // Exemple de Bitxo
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Bitxo1 extends Agent {
 
     static final int PARET = 0;
@@ -24,17 +27,20 @@ public class Bitxo1 extends Agent {
 
     @Override
     public void inicia() {
-        setAngleVisors(0);
+        setAngleVisors(10);
         setDistanciaVisors(350);
         setVelocitatLineal(5);
         setVelocitatAngular(2);
+
         espera = 0;
         objectiu = null;
         objectiu_guard = null;
+
     }
 
     @Override
     public void avaluaComportament() {
+
         boolean enemic;
 
         enemic = false;
@@ -42,6 +48,13 @@ public class Bitxo1 extends Agent {
         int dir;
 
         estat = estatCombat();
+//
+//        System.out.println(estat.angle);
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Bitxo1.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         if (espera > 0) {
             espera--;
@@ -67,35 +80,26 @@ public class Bitxo1 extends Agent {
             } else {
                 endavant();
 
-                //Marcam com a objectiu els recursos
-                
-                objectiu = objectiuMesProper(Agent.RECURSOS);
-                if (objectiu == null) {
-                    //MARCAM UN ALTRE OBJECTIU
-                }
-                if (objectiu == null) {
-                    mira(objectiu.x, objectiu.y);
-                }
-
-                //ANAM A PER LOBJECTIU
-                //Si no pared davant
-                if (!hiHaParedDavant(15)) {
-                    
-                    mira(objectiu.x, objectiu.y);
-                }
-
                 // Miram els visors per detectar els obstacles
                 int sensor = 0;
 
-                if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] < 45) {
-                    sensor += 1;
+                if (estat.angle < 90 && estat.angle > 0) {
+                    if (estat.objecteVisor[ESQUERRA] == PARET
+                            && estat.distanciaVisors[ESQUERRA] < 15) {
+
+                        gira((int) (0 - estat.angle));
+
+                    } else if (estat.objecteVisor[DRETA] == PARET
+                            && estat.distanciaVisors[DRETA] < 15) {
+                        gira((int) (90 - estat.angle));
+                    }
                 }
-                if (estat.objecteVisor[CENTRAL] == PARET && estat.distanciaVisors[CENTRAL] < 45) {
-                    sensor += 2;
-                }
-                if (estat.objecteVisor[DRETA] == PARET && estat.distanciaVisors[DRETA] < 45) {
-                    sensor += 4;
-                }
+//                if (estat.objecteVisor[CENTRAL] == PARET && estat.distanciaVisors[CENTRAL] < 45) {
+//                    sensor += 2;
+//                }
+//                if (estat.objecteVisor[DRETA] == PARET && estat.distanciaVisors[DRETA] < 45) {
+//                    sensor += 4;
+//                }
 
                 switch (sensor) {
                     case 0:
@@ -135,6 +139,10 @@ public class Bitxo1 extends Agent {
 
             }
         }
+    }
+
+    double diferenciAntenes(double a, double b) {
+        return a - b;
     }
 
     boolean hiHaParedDavant(int dist) {
