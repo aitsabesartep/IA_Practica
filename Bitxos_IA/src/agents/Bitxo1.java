@@ -81,6 +81,7 @@ public class Bitxo1 extends Agent {
                 endavant();
 
                 // Miram els visors per detectar els obstacles
+                //Falta seguir amb els ifs
                 int sensor = 0;
 
                 if (estat.angle < 90 && estat.angle > 0) {
