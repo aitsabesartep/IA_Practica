@@ -4,7 +4,7 @@ package agents;
 
 public class Bitxo2 extends Agent {
 
-    static final int PARET = 0;
+   static final int PARET = 0;
     static final int NAU   = 1;
     static final int RES   = -1;
 

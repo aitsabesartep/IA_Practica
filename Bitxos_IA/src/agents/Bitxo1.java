@@ -1,9 +1,5 @@
 package agents;
 
-// Exemple de Bitxo
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class Bitxo1 extends Agent {
 
     static final int PARET = 0;
@@ -21,13 +17,13 @@ public class Bitxo1 extends Agent {
         super(pare, "Bitxo1", "imatges/robotank1.gif");
     }
   
-        @Override
+    @Override
     public void inicia()
     {
-        setAngleVisors(30);
-        setDistanciaVisors(400);
+        setAngleVisors(10);
+        setDistanciaVisors(350);
         setVelocitatLineal(5);
-        setVelocitatAngular(2);
+        setVelocitatAngular(6);
         espera = 0;
     }
 
@@ -40,8 +36,8 @@ public class Bitxo1 extends Agent {
 
         int dir;
 
-        activaEscut();
         estat = estatCombat();
+        
         if (espera > 0) {
             espera--;
         }
