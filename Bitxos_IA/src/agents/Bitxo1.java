@@ -73,21 +73,21 @@ public class Bitxo1 extends Agent {
                     }   //bloqueig per nau, no giris dispara
                 } else // hi ha un obstacle, gira i parteix
                 {
-                    int total = Colisio(8);
-                    switch (total) {
-                        case 0:
-                            System.out.println("gira -20");
-                            gira(-25);
-                            break;
-                        case 1:
-                            System.out.println("gira 80");
-                            gira(190);
-                            break;
-                        default:
-                            System.out.println("gira 20");
-                            gira(20);
-                            break;
-                    }
+//                    int total = Colisio(8);
+//                    switch (total) {
+//                        case 0:
+//                            System.out.println("gira -20");
+//                            gira(-25);
+//                            break;
+//                        case 1:
+//                            System.out.println("gira 80");
+//                            gira(190);
+//                            break;
+//                        default:
+//                            System.out.println("gira 20");
+//                            gira(20);
+//                            break;
+//                    }
                     // 20 graus
                     if (hiHaParedDavant(25)) {
                         enrere();
@@ -274,29 +274,4 @@ class vector {
         this.y = y;
         this.recta = recta;
     }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public double getRecta() {
-        return recta;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setRecta(double recta) {
-        this.recta = recta;
-    }
-
 }

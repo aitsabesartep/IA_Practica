@@ -16,7 +16,7 @@ public class Bitxo2 extends Agent {
     static final int AMPLADA = 800;
     static final int ALTURA = 600;
     ArrayList<vector> marcar_linia = new ArrayList<vector>();
-    static final int RADI = 46;
+    static final int RADI = 40;
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
     static int control_impactes;
@@ -33,7 +33,7 @@ public class Bitxo2 extends Agent {
         setAngleVisors(10);
         setDistanciaVisors(350);
         setVelocitatLineal(5);
-        setVelocitatAngular(6);
+        setVelocitatAngular(4);
         control_impactes = 0;
         espera = 0;
     }
@@ -48,8 +48,8 @@ public class Bitxo2 extends Agent {
         int dir;
 
         estat = estatCombat();
-        
-        if ((estat.impactesRebuts > control_impactes)&&(!estat.disparant)) {
+
+        if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
             hyperespai();
             control_impactes = estat.impactesRebuts;
         }
@@ -74,8 +74,23 @@ public class Bitxo2 extends Agent {
                     }   //bloqueig per nau, no giris dispara
                 } else // hi ha un obstacle, gira i parteix
                 {
-                    gira(25); // 20 graus
-                    if (hiHaParedDavant(20)) {
+//                    int total = Colisio(8);
+//                    switch (total) {
+//                        case 0:
+//                            System.out.println("gira -20");
+//                            gira(-25);
+//                            break;
+//                        case 1:
+//                            System.out.println("gira 80");
+//                            gira(190);
+//                            break;
+//                        default:
+//                            System.out.println("gira 20");
+//                            gira(20);
+//                            break;
+//                    }
+                    // 20 graus
+                    if (hiHaParedDavant(25)) {
                         enrere();
                     } else {
                         endavant();
@@ -83,6 +98,7 @@ public class Bitxo2 extends Agent {
                     espera = 3;
                 }
             } else {
+
                 if (estat.balaEnemigaDetectada) {
                     activaEscut();
                 }
@@ -182,6 +198,21 @@ public class Bitxo2 extends Agent {
         return false;
     }
 
+    int Colisio(int dist) {
+        if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
+            return 0;
+        }
+
+        if (estat.objecteVisor[CENTRAL] == PARET && estat.distanciaVisors[CENTRAL] <= dist) {
+            return 1;
+        }
+
+        if (estat.objecteVisor[DRETA] == PARET && estat.distanciaVisors[DRETA] <= dist) {
+            return 2;
+        }
+        return 3;
+    }
+
     double minimaDistanciaVisors() {
         double minim;
 
@@ -230,4 +261,19 @@ public class Bitxo2 extends Agent {
     public double formula(int x, int y) {
         return Math.sqrt(((x - estat.posicio.x) * (x - estat.posicio.x)) + ((y - estat.posicio.y) * (y - estat.posicio.y)));
     }
+
 }
+
+//Clase vector comentada perque agafam la de bitxo1 que ja esta declarada. 
+//class vector {
+//
+//    int x;
+//    int y;
+//    double recta;
+//
+//    public vector(int x, int y, double recta) {
+//        this.x = x;
+//        this.y = y;
+//        this.recta = recta;
+//    }
+//}
