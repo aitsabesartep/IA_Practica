@@ -15,15 +15,16 @@ public class Bitxo1 extends Agent {
     static final int AMPLADA = 800;
     static final int ALTURA = 600;
     ArrayList<vector> marcar_linia = new ArrayList<vector>();
-    static final int RADI = 50;
+    static final int RADI = 46;
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
+    static int control_impactes;
 
     Estat estat;
     int espera = 0;
 
     public Bitxo1(Agents pare) {
-        super(pare, "Bitxo1", "imatges/robotank1.gif");
+        super(pare, "Bitxo1", "imatges/dibuix.png");
     }
 
     @Override
@@ -32,6 +33,7 @@ public class Bitxo1 extends Agent {
         setDistanciaVisors(350);
         setVelocitatLineal(5);
         setVelocitatAngular(6);
+        control_impactes = 0;
         espera = 0;
     }
 
@@ -45,6 +47,11 @@ public class Bitxo1 extends Agent {
         int dir;
 
         estat = estatCombat();
+        
+        if ((estat.impactesRebuts > control_impactes)&&(!estat.disparant)) {
+            hyperespai();
+            control_impactes = estat.impactesRebuts;
+        }
 
         if (espera > 0) {
             espera--;
