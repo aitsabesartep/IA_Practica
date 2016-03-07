@@ -25,7 +25,7 @@ public class Bitxo2 extends Agent {
     int espera = 0;
 
     public Bitxo2(Agents pare) {
-        super(pare, "Bitxo1", "imatges/dibuix.png");
+        super(pare, "Bitxo1", "imatges/img2.png");
     }
 
     @Override
