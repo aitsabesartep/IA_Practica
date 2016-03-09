@@ -41,12 +41,11 @@ public class Bitxo1 extends Agent {
     public void avaluaComportament() {
 
         boolean enemic;
-
         enemic = false;
-
         int dir;
-
         estat = estatCombat();
+
+        funcioMina();
 
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
             hyperespai();
@@ -257,8 +256,81 @@ public class Bitxo1 extends Agent {
         }
     }
 
-    public double formula(int x, int y) {
+    double formula(int x, int y) {
         return Math.sqrt(((x - estat.posicio.x) * (x - estat.posicio.x)) + ((y - estat.posicio.y) * (y - estat.posicio.y)));
+    }
+
+    boolean funcioMina() {
+        //controlar si angle = 90, 0, 270, 180.
+        int p = 40;
+        int x = estat.posicio.x;
+        int y = estat.posicio.y;
+//        System.out.println(x +" | " +y);
+        double angle = estat.angle;
+        double x2 = 0, y2 = 0, x3 = 0, y3 = 0, x4 = 0, y4 = 0, x5 = 0, y5 = 0;
+
+        if (angle == 90) {
+            x2 = x + 12.5;
+            y2 = y + 12.5;
+            x3 = x + 12.5;
+            y3 = y + 12.5 + p;
+            x4 = x - 12.5;
+            y4 = y + 12.5;
+            x5 = x - 12.5;
+            y5 = y + 12.5 + p;
+        } else if (angle == 180) {
+            x2 = x - 12.5;
+            y2 = y + 12.5;
+            x3 = x - 12.5 - p;
+            y3 = y + 12.5;
+            x4 = x - 12.5;
+            y4 = y - 12.5;
+            x5 = x - 12.5 - p;
+            y5 = y - 12.5;
+        } else if (angle == 270) {
+            x2 = x - 12.5;
+            y2 = y - 12.5;
+            x3 = x - 12.5;
+            y3 = y - 12.5 - p;
+            x4 = x + 12.5;
+            y4 = y - 12.5;
+            x5 = x + 12.5;
+            y5 = y - 12.5 - p;
+
+        } else if (angle == 0) {
+            x2 = x + 12.5;
+            y2 = y - 12.5;
+            x3 = x + 12.5 + p;
+            y3 = y - 12.5;
+            x4 = x + 12.5;
+            y4 = y + 12.5;
+            x5 = x + 12.5 + p;
+            y5 = y + 12.5;
+        } else {
+            double l = (12.5 / Math.tan(angle));
+            x2 = (x + (12.5 / Math.sin(angle)) + ((12.5 - l) * Math.cos(angle)));
+            y2 = (y + ((12.5 - l) * Math.sin(angle)));
+            x3 = (x2 + (p * Math.cos(angle)));
+            y3 = (y2 + (p * Math.sin(angle)));
+            x4 = (x - (12.5 / Math.sin(angle)) + ((12.5 + l) * Math.cos(angle)));
+            y4 = (y + ((12.5 + l) * Math.sin(angle)));
+            x5 = (x4 + (p * Math.cos(angle)));
+            y5 = (y4 + (p * Math.sin(angle)));
+        }
+
+        double xmin = Math.min(Math.min(x2, x3), Math.min(x4, x5));
+        double xmax = Math.max(Math.max(x2, x3), Math.max(x4, x5));
+        double ymin = Math.min(Math.min(y2, y3), Math.min(y4, y5));
+        double ymax = Math.max(Math.max(y2, y3), Math.max(y4, y5));
+
+        for (int i = 0; i < estat.bonificacions.length; i++) {
+            if (estat.bonificacions[i].tipus == Agent.MINA && (xmin <= estat.bonificacions[i].posicio.x) && (xmax >= estat.bonificacions[i].posicio.x) && (ymin <= estat.bonificacions[i].posicio.y) && (ymax >= estat.bonificacions[i].posicio.y)) {
+                System.out.println("TRUE");
+                return true;
+            }
+        }
+//        System.out.println("FALSE");
+        return false;
     }
 
 }
