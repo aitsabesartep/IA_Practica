@@ -45,7 +45,7 @@ public class Bitxo1 extends Agent {
         int dir;
         estat = estatCombat();
 
-        funcioMina();
+        funcioMinaBo();
 
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
             hyperespai();
@@ -260,52 +260,89 @@ public class Bitxo1 extends Agent {
         return Math.sqrt(((x - estat.posicio.x) * (x - estat.posicio.x)) + ((y - estat.posicio.y) * (y - estat.posicio.y)));
     }
 
+    boolean funcioMinaBo() {
+        int angle = (int) estat.angle;
+        int x = estat.posicio.x;
+        int y = estat.posicio.y;
+        int d = 30;
+        double beta = 0;
+        for (int i = 0; i < estat.bonificacions.length; i++) {
+            if (estat.bonificacions[i].tipus == Agent.MINA) {
+                double a = (x - estat.bonificacions[i].posicio.x);
+                double b = (y - estat.bonificacions[i].posicio.y);
+                double h = Math.sqrt((a * a) + (b * b));
+                double alpha = Math.asin(a / h);
+                System.out.println(alpha);
+                if (alpha < 90) {
+                    beta = 90 - alpha;
+                } else if(alpha < 180){
+                    beta = 180 - alpha;
+                } else if(alpha < 270){
+                    beta = 270 - alpha;
+                } else{
+                    beta = 360 - alpha;
+                }
+                System.out.println(angle);
+                if (h < d && (angle > alpha - 2) && (angle < alpha + 2)) {
+                    System.out.println("TRUE");
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
     boolean funcioMina() {
         //controlar si angle = 90, 0, 270, 180.
+        int angle = (int) estat.angle + 90;
+        if (angle >= 360) {
+            angle = angle - 360;
+        }
         int p = 40;
         int x = estat.posicio.x;
         int y = estat.posicio.y;
 //        System.out.println(x +" | " +y);
-        double angle = estat.angle;
+
         double x2 = 0, y2 = 0, x3 = 0, y3 = 0, x4 = 0, y4 = 0, x5 = 0, y5 = 0;
 
         if (angle == 90) {
             x2 = x + 12.5;
-            y2 = y + 12.5;
+            y2 = y - 12.5;
             x3 = x + 12.5;
-            y3 = y + 12.5 + p;
+            y3 = y - 12.5 - p;
             x4 = x - 12.5;
-            y4 = y + 12.5;
+            y4 = y - 12.5;
             x5 = x - 12.5;
-            y5 = y + 12.5 + p;
+            y5 = y - 12.5 - p;
         } else if (angle == 180) {
             x2 = x - 12.5;
-            y2 = y + 12.5;
+            y2 = y - 12.5;
             x3 = x - 12.5 - p;
-            y3 = y + 12.5;
+            y3 = y - 12.5;
             x4 = x - 12.5;
-            y4 = y - 12.5;
+            y4 = y + 12.5;
             x5 = x - 12.5 - p;
-            y5 = y - 12.5;
+            y5 = y + 12.5;
         } else if (angle == 270) {
             x2 = x - 12.5;
-            y2 = y - 12.5;
+            y2 = y + 12.5;
             x3 = x - 12.5;
-            y3 = y - 12.5 - p;
+            y3 = y + 12.5 + p;
             x4 = x + 12.5;
-            y4 = y - 12.5;
+            y4 = y + 12.5;
             x5 = x + 12.5;
-            y5 = y - 12.5 - p;
+            y5 = y + 12.5 + p;
 
         } else if (angle == 0) {
             x2 = x + 12.5;
-            y2 = y - 12.5;
+            y2 = y + 12.5;
             x3 = x + 12.5 + p;
-            y3 = y - 12.5;
+            y3 = y + 12.5;
             x4 = x + 12.5;
-            y4 = y + 12.5;
+            y4 = y - 12.5;
             x5 = x + 12.5 + p;
-            y5 = y + 12.5;
+            y5 = y - 12.5;
         } else {
             double l = (12.5 / Math.tan(angle));
             x2 = (x + (12.5 / Math.sin(angle)) + ((12.5 - l) * Math.cos(angle)));
@@ -316,6 +353,8 @@ public class Bitxo1 extends Agent {
             y4 = (y + ((12.5 + l) * Math.sin(angle)));
             x5 = (x4 + (p * Math.cos(angle)));
             y5 = (y4 + (p * Math.sin(angle)));
+            System.out.println("Posicio robot: " + x + "   " + y);
+            System.out.println(x2 + " , " + y2 + " | " + x3 + " , " + y3 + " | " + x4 + " , " + y4 + " | " + x5 + " , " + y5);
         }
 
         double xmin = Math.min(Math.min(x2, x3), Math.min(x4, x5));
