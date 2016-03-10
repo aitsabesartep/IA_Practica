@@ -45,8 +45,6 @@ public class Bitxo1 extends Agent {
         int dir;
         estat = estatCombat();
 
-        funcioMinaBo();
-
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
             hyperespai();
             control_impactes = estat.impactesRebuts;
@@ -111,11 +109,16 @@ public class Bitxo1 extends Agent {
                     }
                     //Si hi ha un recurs a un radi a prop el detectara i girara cap a ell
                 } else if (recursAprop()) {
+                    if (funcioMina()) {
+                        gira(-20);
+                    }
                     if (memoria_old != memoria) {
                         mira(memoria.x, memoria.y);
                         memoria_old = memoria;
                     }
                     endavant();
+                } else if (funcioMina()) {
+                    gira(180);
                 }
 
                 if (estat.objecteVisor[CENTRAL] == NAU && !estat.disparant && estat.impactesRival < 5) {
@@ -179,7 +182,8 @@ public class Bitxo1 extends Agent {
         }
     }
 
-    boolean hiHaParedDavant(int dist) {
+    boolean hiHaParedDavant(int dist
+    ) {
 
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
             return true;
@@ -196,7 +200,8 @@ public class Bitxo1 extends Agent {
         return false;
     }
 
-    int Colisio(int dist) {
+    int Colisio(int dist
+    ) {
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
             return 0;
         }
@@ -256,73 +261,53 @@ public class Bitxo1 extends Agent {
         }
     }
 
-    double formula(int x, int y) {
+    double formula(int x, int y
+    ) {
         return Math.sqrt(((x - estat.posicio.x) * (x - estat.posicio.x)) + ((y - estat.posicio.y) * (y - estat.posicio.y)));
     }
 
-    boolean funcioMinaBo() {
-        int angle = (int) estat.angle;
+    boolean funcioMina() {
         int x = estat.posicio.x;
         int y = estat.posicio.y;
+        double angle = estat.angle;
         int d = 30;
-        double alpha;
-        double h;
-        double tan;
+        double h = 0;
+        double m = 0;
+        double ordenada_origen;
+        double sol;
 
         for (int i = 0; i < estat.bonificacions.length; i++) {
             if (estat.bonificacions[i].tipus == Agent.MINA) {
 
                 int x1 = estat.bonificacions[i].posicio.x;
                 int y1 = estat.bonificacions[i].posicio.y;
-
-                if (x1 < x && y1 < y) {
-                    double a = (x - x1);
-                    double b = (y - y1);
-                    h = Math.sqrt((a * a) + (b * b));
-                    tan = (a / b);
-                    alpha = Math.atan(tan);
-                    alpha = Math.toDegrees(alpha);
-                    System.out.println("-- Aplha: " + alpha);
-                    alpha = 90 - alpha;
-                } else if (x1 < x && y1 > y) {
-                    double a = (x - x1);
-                    double b = (y1 - y);
-                    h = Math.sqrt((a * a) + (b * b));
-                    tan = (a / b);
-                    alpha = Math.atan(tan);
-                    alpha = Math.toDegrees(alpha);
-                    System.out.println("-- Aplha: " + alpha);
-                    alpha = 90 + alpha;
-                } else if (x1 > x && y1 > y) {
-                    double a = (x1 - x);
-                    double b = (y1 - y);
-                    h = Math.sqrt((a * a) + (b * b));
-                    tan = (a / b);
-                    alpha = Math.atan(tan);
-                    alpha = Math.toDegrees(alpha);
-                    System.out.println("-- Aplha: " + alpha);
-                    alpha = 270 - alpha;
-                } else {
-                    double a = (x1 - x);
-                    double b = (y - y1);
-                    h = Math.sqrt((a * a) + (b * b));
-                    tan = (a / b);
-                    alpha = Math.atan(tan);
-                    alpha = Math.toDegrees(alpha);
-                    System.out.println("-- Aplha: " + alpha);
-                    alpha = 270 + alpha;
-                }
-                System.out.println("ALPHA BO: " + alpha);
-                System.out.println("Angle tanque: " + angle);
-                if ((h < d) && (angle > (alpha - 2)) && (angle < (alpha + 2))) {
-                    System.out.println("TRUE");
-//                    return true;
+                double a = (x1 - x);
+                double b = (y - y1);
+                m = Math.tan(angle);
+                h = Math.sqrt((a * a) + (b * b));
+//                if (angle < 90) {
+//                    m = 90 - angle;
+//                } else if (90 > angle && angle < 180) {
+//                    m = 180 - angle;
+//                } else if (180 > angle && angle < 270) {
+//                    m = 270 - angle;
+//                } else if (270 > angle && angle < 360) {
+//                    m = 360 - angle;
+//                }
+                ordenada_origen = (y - (m * x));
+                sol = (m * x1) + ordenada_origen;
+//                System.out.println(x1 + " | " + y1);
+//                System.out.println(sol);
+                if (h < d && ((sol + 22.5) >= y1) && ((sol - 22.5) <= y1)) {
+                    System.out.println("--");
+                    return true;
                 }
             }
         }
         return false;
 
     }
+
 }
 
 class vector {
