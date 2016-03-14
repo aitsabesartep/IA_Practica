@@ -163,8 +163,14 @@ public class Bitxo1 extends Agent {
                         distancia = minimaDistanciaVisors();
 
                         if (distancia < 15) {
-                            espera = 8;
-                            enrere();
+                            int colisio = Colisio(distancia);
+                            if (colisio == 1) {
+                                gira (-60);
+                            } else if( colisio == 2){
+                                gira(60);
+                            } else {
+                                gira(90);
+                            }
                         } else // gira aleatòriament a la dreta o a l'esquerra
                         //                        if (distancia < 50) {
                         //                            if (Math.random() * 500 < 250) {
@@ -200,20 +206,26 @@ public class Bitxo1 extends Agent {
         return false;
     }
 
-    int Colisio(int dist) 
-    {
+    int Colisio(double dist) {
+        double d = 0;
+        double e = 0;
+        double c = 0;
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
-            return 0;
+            e = estat.distanciaVisors[ESQUERRA];
         }
-
         if (estat.objecteVisor[CENTRAL] == PARET && estat.distanciaVisors[CENTRAL] <= dist) {
-            return 1;
+            c = estat.distanciaVisors[CENTRAL];
         }
-
         if (estat.objecteVisor[DRETA] == PARET && estat.distanciaVisors[DRETA] <= dist) {
-            return 2;
+            d = estat.distanciaVisors[DRETA];
         }
-        return 3;
+        if (e < d && c != 0) {
+            return 1;
+        } else if (e > d && c != 0) {
+            return 2;
+        } else {
+            return 3;
+        }
     }
 
     double minimaDistanciaVisors() {

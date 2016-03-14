@@ -42,11 +42,8 @@ public class Bitxo2 extends Agent {
     public void avaluaComportament() {
 
         boolean enemic;
-
         enemic = false;
-
         int dir;
-
         estat = estatCombat();
 
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
@@ -103,6 +100,7 @@ public class Bitxo2 extends Agent {
                     activaEscut();
                 }
                 endavant();
+                int fm = funcioMina();
                 if (estat.veigEnemic) {
                     if (estat.sector == 2 || estat.sector == 3) {
                         mira(estat.posicioEnemic.x, estat.posicioEnemic.y);
@@ -118,6 +116,10 @@ public class Bitxo2 extends Agent {
                         memoria_old = memoria;
                     }
                     endavant();
+                } else if (fm == 1) {
+                    gira(-90);
+                } else if (fm == 2) {
+                    gira(90);
                 }
 
                 if (estat.objecteVisor[CENTRAL] == NAU && !estat.disparant && estat.impactesRival < 5) {
@@ -162,8 +164,14 @@ public class Bitxo2 extends Agent {
                         distancia = minimaDistanciaVisors();
 
                         if (distancia < 15) {
-                            espera = 8;
-                            enrere();
+                            int colisio = Colisio(distancia);
+                            if (colisio == 1) {
+                                gira (-60);
+                            } else if( colisio == 2){
+                                gira(60);
+                            } else {
+                                gira(90);
+                            }
                         } else // gira aleatòriament a la dreta o a l'esquerra
                         //                        if (distancia < 50) {
                         //                            if (Math.random() * 500 < 250) {
@@ -181,7 +189,8 @@ public class Bitxo2 extends Agent {
         }
     }
 
-    boolean hiHaParedDavant(int dist) {
+    boolean hiHaParedDavant(int dist
+    ) {
 
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
             return true;
@@ -198,19 +207,26 @@ public class Bitxo2 extends Agent {
         return false;
     }
 
-    int Colisio(int dist) {
+    int Colisio(double dist) {
+        double d = 0;
+        double e = 0;
+        double c = 0;
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
-            return 0;
+            e = estat.distanciaVisors[ESQUERRA];
         }
-
         if (estat.objecteVisor[CENTRAL] == PARET && estat.distanciaVisors[CENTRAL] <= dist) {
-            return 1;
+            c = estat.distanciaVisors[CENTRAL];
         }
-
         if (estat.objecteVisor[DRETA] == PARET && estat.distanciaVisors[DRETA] <= dist) {
-            return 2;
+            d = estat.distanciaVisors[DRETA];
         }
-        return 3;
+        if (e < d && c != 0) {
+            return 1;
+        } else if (e > d && c != 0) {
+            return 2;
+        } else {
+            return 3;
+        }
     }
 
     double minimaDistanciaVisors() {
@@ -258,8 +274,52 @@ public class Bitxo2 extends Agent {
         }
     }
 
-    public double formula(int x, int y) {
+    double formula(int x, int y
+    ) {
         return Math.sqrt(((x - estat.posicio.x) * (x - estat.posicio.x)) + ((y - estat.posicio.y) * (y - estat.posicio.y)));
+    }
+
+    int funcioMina() {
+        int x = estat.posicio.x;
+        int y = estat.posicio.y;
+        double angle = estat.angle;
+        int d = 30;
+        double h = 0;
+        double m = 0;
+        double ordenada_origen;
+        double sol;
+
+        for (int i = 0; i < estat.bonificacions.length; i++) {
+            if (estat.bonificacions[i].tipus == Agent.MINA) {
+
+                int x1 = estat.bonificacions[i].posicio.x;
+                int y1 = estat.bonificacions[i].posicio.y;
+                double a = (x1 - x);
+                double b = (y - y1);
+                m = Math.tan(angle);
+                h = Math.sqrt((a * a) + (b * b));
+//                if (angle < 90) {
+//                    m = 90 - angle;
+//                } else if (90 > angle && angle < 180) {
+//                    m = 180 - angle;
+//                } else if (180 > angle && angle < 270) {
+//                    m = 270 - angle;
+//                } else if (270 > angle && angle < 360) {
+//                    m = 360 - angle;
+//                }
+                ordenada_origen = (y - (m * x));
+                sol = (m * x1) + ordenada_origen;
+                if (h < d && ((sol + 22.5) >= y1) && ((sol - 22.5) <= y1)) {
+                    if (y1 < sol) {
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                }
+            }
+        }
+        return 0;
+
     }
 
 }
