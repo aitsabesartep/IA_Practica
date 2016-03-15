@@ -19,6 +19,7 @@ public class Bitxo1 extends Agent {
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
     static int control_impactes;
+    double temps = 0;
 
     Estat estat;
     int espera = 0;
@@ -46,7 +47,9 @@ public class Bitxo1 extends Agent {
         estat = estatCombat();
 
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
-            hyperespai();
+            if ((temps - estat.temps) >= 5000 || temps != 0) {
+                hyperespai();
+            }
             control_impactes = estat.impactesRebuts;
         }
 
@@ -62,6 +65,7 @@ public class Bitxo1 extends Agent {
                 if (estat.objecteVisor[CENTRAL] == NAU && estat.impactesRival < 5) {
                     if (estat.balaEnemigaDetectada) {
                         activaEscut();
+                        temps = estat.temps;
                     }
                     if (estat.perforadores > 0) {
                         perforadora();
@@ -97,6 +101,7 @@ public class Bitxo1 extends Agent {
 
                 if (estat.balaEnemigaDetectada) {
                     activaEscut();
+                    temps = estat.temps;
                 }
                 endavant();
                 int fm = funcioMina();
@@ -165,8 +170,8 @@ public class Bitxo1 extends Agent {
                         if (distancia < 15) {
                             int colisio = Colisio(distancia);
                             if (colisio == 1) {
-                                gira (-60);
-                            } else if( colisio == 2){
+                                gira(-60);
+                            } else if (colisio == 2) {
                                 gira(60);
                             } else {
                                 gira(90);
