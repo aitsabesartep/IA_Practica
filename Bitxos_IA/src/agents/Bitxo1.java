@@ -18,6 +18,9 @@ public class Bitxo1 extends Agent {
     static final int RADI = 40;
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
+    static Punt memoria_old_posicio = new Punt(0, 0);
+    static int control = 0;
+    static long darrer_hyper_old;
     static int control_impactes;
     double temps = 0;
 
@@ -32,23 +35,34 @@ public class Bitxo1 extends Agent {
     public void inicia() {
         setAngleVisors(10);
         setDistanciaVisors(350);
-        setVelocitatLineal(5);
+        setVelocitatLineal(4);
         setVelocitatAngular(4);
         control_impactes = 0;
         espera = 0;
+        darrer_hyper_old = 30000;
     }
 
     @Override
     public void avaluaComportament() {
-
-        boolean enemic;
-        enemic = false;
-        int dir;
+        
         estat = estatCombat();
+        if (memoria_old_posicio.x == estat.posicio.x && memoria_old_posicio.y == estat.posicio.y) {
+            control++;
+        } else {
+            control = 0;
+        }
+        memoria_old_posicio = estat.posicio;
+        if (control == 10 && (darrer_hyper_old - estat.temps) > 2000) {
+            control = 0;
+            hyperespai();
+            darrer_hyper_old = estat.temps;
+
+        }
 
         if ((estat.impactesRebuts > control_impactes) && (!estat.disparant)) {
             if ((temps - estat.temps) >= 5000 || temps != 0) {
                 hyperespai();
+                darrer_hyper_old = estat.temps;
             }
             control_impactes = estat.impactesRebuts;
         }
