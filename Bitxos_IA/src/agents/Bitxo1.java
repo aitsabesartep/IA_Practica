@@ -15,7 +15,7 @@ public class Bitxo1 extends Agent {
     static final int AMPLADA = 800;
     static final int ALTURA = 600;
     ArrayList<vector> marcar_linia = new ArrayList<vector>();
-    static final int RADI = 40;
+    static final int RADI = 55;
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
     static Punt memoria_old_posicio = new Punt(0, 0);
@@ -28,7 +28,7 @@ public class Bitxo1 extends Agent {
     int espera = 0;
 
     public Bitxo1(Agents pare) {
-        super(pare, "Bitxo1", "imatges/img1.png");
+        super(pare, "Champi", "imatges/img1.g");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Bitxo1 extends Agent {
 
     @Override
     public void avaluaComportament() {
-        
+
         estat = estatCombat();
         if (memoria_old_posicio.x == estat.posicio.x && memoria_old_posicio.y == estat.posicio.y) {
             control++;
@@ -207,8 +207,7 @@ public class Bitxo1 extends Agent {
         }
     }
 
-    boolean hiHaParedDavant(int dist
-    ) {
+    boolean hiHaParedDavant(int dist) {
 
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
             return true;
@@ -285,7 +284,7 @@ public class Bitxo1 extends Agent {
         }
         for (int i = 0; i < estat.bonificacions.length; i++) {
             double d = formula(estat.bonificacions[i].posicio.x, estat.bonificacions[i].posicio.y);
-            if (estat.bonificacions[i].tipus != Agent.MINA && d < RADI) {
+            if (estat.bonificacions[i].tipus != Agent.MINA && d < RADI && !hiHaParedDavant(20)) {
                 vector v = new vector(estat.bonificacions[i].posicio.x, estat.bonificacions[i].posicio.y, d);
                 marcar_linia.add(v);
             }
@@ -316,15 +315,6 @@ public class Bitxo1 extends Agent {
                 double b = (y - y1);
                 m = Math.tan(angle);
                 h = Math.sqrt((a * a) + (b * b));
-//                if (angle < 90) {
-//                    m = 90 - angle;
-//                } else if (90 > angle && angle < 180) {
-//                    m = 180 - angle;
-//                } else if (180 > angle && angle < 270) {
-//                    m = 270 - angle;
-//                } else if (270 > angle && angle < 360) {
-//                    m = 360 - angle;
-//                }
                 ordenada_origen = (y - (m * x));
                 sol = (m * x1) + ordenada_origen;
                 if (h < d && ((sol + 22.5) >= y1) && ((sol - 22.5) <= y1)) {
@@ -337,9 +327,7 @@ public class Bitxo1 extends Agent {
             }
         }
         return 0;
-
     }
-
 }
 
 class vector {

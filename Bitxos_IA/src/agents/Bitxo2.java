@@ -4,7 +4,7 @@ package agents;
 import java.util.ArrayList;
 
 public class Bitxo2 extends Agent {
-
+    
     static final int PARET = 0;
     static final int NAU = 1;
     static final int RES = -1;
@@ -15,8 +15,8 @@ public class Bitxo2 extends Agent {
 
     static final int AMPLADA = 800;
     static final int ALTURA = 600;
-    ArrayList<vector> marcar_linia = new ArrayList<vector>();
-    static final int RADI = 40;
+    ArrayList<vector1> marcar_linia = new ArrayList<vector1>();
+    static final int RADI = 55;
     static Punt memoria = new Punt(0, 0);
     static Punt memoria_old = new Punt(0, 0);
     static Punt memoria_old_posicio = new Punt(0, 0);
@@ -29,7 +29,7 @@ public class Bitxo2 extends Agent {
     int espera = 0;
 
     public Bitxo2(Agents pare) {
-        super(pare, "Bitxo1", "imatges/img2.png");
+        super(pare, "Champi", "imatges/img1.gif");
     }
 
     @Override
@@ -208,8 +208,8 @@ public class Bitxo2 extends Agent {
         }
     }
 
-    boolean hiHaParedDavant(int dist
-    ) {
+    boolean hiHaParedDavant(int dist) 
+    {
 
         if (estat.objecteVisor[ESQUERRA] == PARET && estat.distanciaVisors[ESQUERRA] <= dist) {
             return true;
@@ -266,7 +266,7 @@ public class Bitxo2 extends Agent {
 
     boolean recursAprop() {
         marcarLinea();
-        vector v = new vector(900, 900, 900);
+        vector1 v = new vector1(900, 900, 900);
         for (int i = 0; i < marcar_linia.size(); i++) {
             if (v.recta > marcar_linia.get(i).recta) {
                 v = marcar_linia.get(i);
@@ -286,8 +286,8 @@ public class Bitxo2 extends Agent {
         }
         for (int i = 0; i < estat.bonificacions.length; i++) {
             double d = formula(estat.bonificacions[i].posicio.x, estat.bonificacions[i].posicio.y);
-            if (estat.bonificacions[i].tipus != Agent.MINA && d < RADI) {
-                vector v = new vector(estat.bonificacions[i].posicio.x, estat.bonificacions[i].posicio.y, d);
+            if (estat.bonificacions[i].tipus != Agent.MINA && d < RADI && !hiHaParedDavant(20)) {
+                vector1 v = new vector1(estat.bonificacions[i].posicio.x, estat.bonificacions[i].posicio.y, d);
                 marcar_linia.add(v);
             }
         }
@@ -342,16 +342,16 @@ public class Bitxo2 extends Agent {
     }
 
 }
-//Clase vector comentada perque agafam la de bitxo1 que ja esta declarada. 
-//class vector {
-//
-//    int x;
-//    int y;
-//    double recta;
-//
-//    public vector(int x, int y, double recta) {
-//        this.x = x;
-//        this.y = y;
-//        this.recta = recta;
-//    }
-//}
+
+class vector1 {
+
+    int x;
+    int y;
+    double recta;
+
+    public vector1(int x, int y, double recta) {
+        this.x = x;
+        this.y = y;
+        this.recta = recta;
+    }
+}
